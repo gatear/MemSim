@@ -1,14 +1,17 @@
+
+import java.util.Arrays;
+import java.util.List;
+
 public class Process{
   public int proc_id, proc_size, text, data, heap, pages, ext, frag;
 
-  public void setid(int val)
- {
-  proc_id = val;
-  System.out.println("PROCESS ID:"+proc_id);
- }
+  public static int id = 1000;
 
  public Process(int low,int high)
  {
+  id += 1;
+  proc_id = id;
+
   int lower,higher;
   double db = Math.random()*(high-low)+low;   //generates a number between low and high
   int k=1,sum=0;
@@ -43,9 +46,29 @@ public class Process{
     else
       total=proc_size;                       //repeating the procedure until random no.s generated satisfies the condition.
    }
-   System.out.println("PROCESS SIZE:"+proc_size);
-   System.out.println("TEXT SIZE:"+text);
-   System.out.println("DATA SIZE:"+data);
-   System.out.println("HEAP SIZE:"+heap);
   }
+
+ public String[] toStringArray () {
+   String [] stringArray = { getProc_id(), getProc_size(), getText(), getData(), getHeap()};
+   return  stringArray;
+  }
+
+ public String getProc_id() {
+  return String.valueOf(proc_id);
+ }
+
+ public String getProc_size() {
+  return String.valueOf(proc_size);
+ }
+ public String getText() {
+  return String.valueOf(text);
+ }
+
+ public String getData() {
+  return String.valueOf(data);
+ }
+
+ public String getHeap() {
+  return String.valueOf(heap);
+ }
 }

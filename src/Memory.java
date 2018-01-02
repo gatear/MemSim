@@ -1,11 +1,19 @@
 
 
+import ascii.table.Table;
+
 import java.util.Arrays;
 import java.util.Scanner;
 
 public class Memory
 {
     public static int number_holes , memory_size =256,total,low,high,no_proc, page_frame, hole_condition = 0, size = 20;
+
+    private static String [][] processTableData, holesTableData;
+
+    private static String [] processTableHeader = {"PID ", "PROCESS SIZE [BYTES]", "TEXT [BYTES]", "DATA [BYTES]", "HEAP [BYTES]"};
+
+    private static String [] holesTableHeader = {"FRAGMENT ID", "SIZE [BYTES]"};
 
     private static int first_flag[]=new int[size], best_flag[]=new int[size],  worst_flag[]= new int[size],  page_flag[] = new int[size], hole[]= new int[size];
 
@@ -34,8 +42,8 @@ public class Memory
         low=(total/ number_holes)/2;
         high=(total/ number_holes)*2;
 
-        System.out.println("low = "+low);
-        System.out.println("high = "+high);
+        System.out.println("SMALLEST POSSIBLE FRAGMENT [BYTES] = "+low);
+        System.out.println("LARGEST POSSIBLE FRAGMENT [BYTES] = "+high+"\n");
 
         while(k==1)
         {
@@ -52,16 +60,21 @@ public class Memory
                 total= memory_size;
         }
 
+        holesTableData = new String [number_holes][2];
+
         for(int i = 0; i< number_holes; i++)
         {
-            System.out.print("SIZE OF HOLE  "+(i)+" ===> "); // DISPLAYING GENERATED HOLE SIZES
-            System.out.println(hole[i]+" BYTES");
+            holesTableData[i][0] = String.valueOf(i);
+            holesTableData[i][1] = String.valueOf(hole[i]);
         }
+
+        String holesTable = Table.getTable(holesTableHeader, holesTableData);
+        System.out.println(holesTable);
 
         int maxsize = Arrays.stream(hole).max().getAsInt();
         int minsize = Arrays.stream(hole).min().getAsInt();
 
-        System.out.println("hole with Maximum size= "+maxsize+" BYTES");
+        System.out.println("LARGEST EFFECTIVE FRAGMENT [BYTES] = "+maxsize+ "\n");
 
 
         System.out.println("ENTER NUMBER OF PROCESSES");  // ENTER NUMBER OF PROCESSES
@@ -69,20 +82,28 @@ public class Memory
         no_proc = inc.nextInt();
         Process[] P= new Process[no_proc];
 
+
         for(int i=0;i<no_proc;i++)
         {
-            System.out.println("PROCESS ===> "+(i+1));
             P[i]=new Process(minsize,maxsize);
         }
 
-        System.out.println("No. of processes = "+no_proc);
+        /* CONVERTS THE ARRAY TO PRINT THE ASCII TABLE */
+        processTableData = Arrays.asList(P)
+                                 .stream()
+                                 .map(p -> p.toStringArray() )
+                                 .toArray(String[][]::new);
+
+        String procTable = Table.getTable(processTableHeader, processTableData);
+
+        System.out.println(procTable);
 
         int ch;			//ASKING FOR THE KIND OF ALLOCATION
         do
         {
-            System.out.println("******************************************************************");
-            System.out.println("*********************SELECT THE MEMORY METHOD*********************");
-            System.out.println("******************************************************************");
+            System.out.println("****************************************************************************");
+            System.out.println("*********************SELECT THE MEMORY METHOD*******************************");
+            System.out.println("****************************************************************************");
             System.out.print("\n\t1.SEGMENTATION\n\t2.PAGING\n\t3.EXIT\n");
             Scanner chk= new Scanner(System.in);
             ch=chk.nextInt();
